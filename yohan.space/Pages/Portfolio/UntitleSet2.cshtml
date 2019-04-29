@@ -1,0 +1,115 @@
+﻿@page
+@{
+    ViewData["Title"] = "UntitleSet2";
+}
+
+<h1>UntitleSet2</h1>
+<div id="sketch-div"></div>
+<div >
+    <div class="row">
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Untitle-1
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <button class="dropdown-item" type="button" onclick="loadedUntitle1()">Untitle-1</button>
+                <button class="dropdown-item" type="button" onclick="loadedUntitle2()">Untitle-2</button>
+                <button class="dropdown-item" type="button" onclick="loadedUntitle3()">Untitle-3</button>
+                <button class="dropdown-item" type="button" onclick="loadedUntitle4()">Untitle-4</button>
+                <button class="dropdown-item" type="button" onclick="loadedUntitle5()">Untitle-5</button>
+                <button class="dropdown-item" type="button" onclick="loadedUntitle6()">Untitle-6</button>
+                <button class="dropdown-item" type="button" onclick="loadedUntitle7()">Untitle-7</button>
+                <button class="dropdown-item" type="button" onclick="loadedUntitle8()">Untitle-8</button>
+                <button class="dropdown-item" type="button" onclick="loadedUntitle9()">Untitle-9</button>
+                <button class="dropdown-item" type="button" onclick="loadedUntitle10()">Untitle-10</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var drawFunc = function () { };
+    var setupFunc = function () { }; 
+    var nullFunc = function () { };
+
+    function loadedUntitle1() {
+        setup();
+        var zNoise = 0;
+
+        setupFunc = function ()
+        {
+            rectMode(CENTER);
+            colorMode(HSB);
+            noFill();
+        }
+
+        setup();
+
+        drawFunc = function () {
+            background(255);
+            for (var r = 1; r < height / 10; r++) {
+                for (var c = 1; c < width / 10 - 1; c++) {
+                    zNoise += 0.000003;
+                    var x = c * 10;
+                    var y = r * 10;
+
+                    var len = 5 * noise(x, y, zNoise);
+                    rect(x, y, len, len);
+                    len = len * 3;
+                    rect(x, y, len, len);
+                }
+            }
+        }
+        document.getElementById("dropdownMenu2").innerText = "Untitle-1";
+    }
+
+    function loadedUntitle2() {
+
+        var xNoise = random(10), yNoise = random(10);
+        var sx = xNoise;
+        setupFunc = 
+            function () {
+ 
+                background(255);
+                for (var r = 1; r < height / 5   -1; r++) {
+                    yNoise += 0.1;
+                    xNoise = sx;
+                    for (var c = 1; c < width / 5 - 1; c++) {
+                        xNoise += 0.1;
+                        var x = c * 5;
+                        var y = r * 5;
+
+                        var len = 10 * noise(x, y);
+                        rect(x, y, len, len);
+                    }
+                }
+            }
+
+        drawFunc = nullFunc;
+
+        setup();
+
+        document.getElementById("dropdownMenu2").innerText = "Untitle-2";
+    }
+
+    window.onload = function ()
+    {
+        loadedUntitle1();
+    }
+
+    function setup()
+    {
+        var canvasDiv = document.getElementById("sketch-div");
+        var width = canvasDiv.offsetWidth;
+        var cvs = createCanvas(width, 400); 
+        cvs.parent("sketch-div");
+        setupFunc();
+    }
+
+    function draw()
+    {
+        drawFunc();
+    }
+
+</script>

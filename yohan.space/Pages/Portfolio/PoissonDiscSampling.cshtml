@@ -1,0 +1,250 @@
+﻿@page
+@{
+    ViewData["Title"] = "Poisson Disc Sampling";
+}
+
+<h1>Poisson Disc Sampling</h1>
+<div id="sketch-div" class="w-100"></div>
+<div class="container">
+    <div class="row">
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Dynamic
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <button class="dropdown-item" type="button" onclick="loadedDynamic()">Dynamic</button>
+                <button class="dropdown-item" type="button" onclick="loadedStatic()">Static</button>
+                <button class="dropdown-item" type="button" onclick="loadedCenteralizing()">Center</button>
+            </div>
+        </div>
+
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Black
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenu3">
+                <button class="dropdown-item" type="button" onclick="blackBackground()">Black</button>
+                <button class="dropdown-item" type="button" onclick="whiteBackground()">White</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var r = 10;
+    var cnt = 30;
+    var grid = [];
+    var w = r / Math.sqrt(2);
+    var active = [];
+    var drawed = [];
+    var cols, rows;
+    var mycolor = 0;
+    var backcolor = 0;
+
+    var clicked = false;
+
+    function blackBackground() {
+        backcolor = 0; setup();
+        document.getElementById("dropdownMenu3").innerText = "Black";
+    }
+
+    function whiteBackground() {
+        backcolor = 250; setup();
+        document.getElementById("dropdownMenu3").innerText = "White";
+    }
+
+    function setup() {
+        var canvasDiv = document.getElementById("sketch-div");
+        var width = canvasDiv.offsetWidth;
+        var cvs = createCanvas(width, 640);
+        cvs.parent("sketch-div");
+
+        background(backcolor);
+        strokeWeight(4);
+
+        // STEP 0
+        cols = floor(width / w);
+        rows = floor(height / w);
+        for (var i = 0; i < cols * rows; i++) grid[i] = undefined;
+        strokeWeight(r * 0.5);
+        colorMode(HSB);
+        active = [];
+        grid = [];
+        drawed = [];
+    }
+
+    function mouseClicked()
+    {
+        clicked = true;
+        // STEP 1
+        var x = mouseX;
+        var y = mouseY;
+        var i = floor(x / w), j = floor(y / w);
+        var pos = createVector(x, y);
+        grid[i + j * cols] = pos;
+        drawed.push(pos);
+        active.push(pos);
+    }
+
+    var container = dynamic;
+    function loadedDynamic() {
+        setup(); container = dynamic; loop();
+        document.getElementById("dropdownMenu2").innerText  = "Dynamic";
+    }
+    function loadedStatic() {
+        setup(); container = staticf; loop();
+        document.getElementById("dropdownMenu2").innerText  = "Static";
+    }
+    function loadedCenteralizing() {
+        setup(); container = centerf; loop();
+        document.getElementById("dropdownMenu2").innerText  = "Center";
+    }
+    function draw() { container(); }
+    function dynamic() {
+
+        for (var mm = 0; mm < 30; mm++) {
+            if (active.length > 0) {
+                var ran = floor(random(active.length));
+                var pos = active[ran];
+
+                for (var i = 0; i < cnt; i++) {
+                    var sample = p5.Vector.random2D();
+                    var m = random(r, 2 * r);
+                    sample.setMag(m);
+                    sample.add(pos);
+
+                    var col = floor(sample.x / w);
+                    var row = floor(sample.y / w);
+
+                    if (col < 0 || row < 0 || col >= cols || row >= rows) continue;
+                    if (grid[col + row * cols]) continue;
+
+                    var chk = true;
+                    for (var j = -1; j <= 1; j++) {
+                        for (var k = -1; k <= 1; k++) {
+                            var idx = (col + j) + (row + k) * cols;
+                            var neighbor = grid[idx];
+                            if (!neighbor) continue;
+
+                            var d = p5.Vector.dist(sample, neighbor);
+                            if (d < r) chk = false;
+                        }
+                    }
+
+                    if (chk) {
+                        grid[col + row * cols] = sample;
+                        drawed.push(sample);
+                        active.push(sample);
+                    }
+                }
+
+                active.splice(ran, 1);
+            }
+        }
+
+        while (drawed.length > 0) {
+            var cur = drawed.shift();
+            stroke((mycolor++) % 360, 100, 100);
+            point(cur.x, cur.y);
+        }
+
+    }
+
+    function centerf() {
+
+        for (var mm = 0; mm < 30; mm++) {
+            if (active.length > 0) {
+                var pos  = active[0];
+
+                for (var i = 0; i < cnt; i++) {
+                    var sample = p5.Vector.random2D();
+                    var m = random(r, 2 * r);
+                    sample.setMag(m);
+                    sample.add(pos);
+
+                    var col = floor(sample.x / w);
+                    var row = floor(sample.y / w);
+
+                    if (col < 0 || row < 0 || col >= cols || row >= rows) continue;
+                    if (grid[col + row * cols]) continue;
+
+                    var chk = true;
+                    for (var j = -1; j <= 1; j++) {
+                        for (var k = -1; k <= 1; k++) {
+                            var idx = (col + j) + (row + k) * cols;
+                            var neighbor = grid[idx];
+                            if (!neighbor) continue;
+
+                            var d = p5.Vector.dist(sample, neighbor);
+                            if (d < r) chk = false;
+                        }
+                    }
+
+                    if (chk) {
+                        grid[col + row * cols] = sample;
+                        drawed.push(sample);
+                        active.push(sample);
+                    }
+                }
+                active.splice(0, 1);
+            }
+        }
+
+        while (drawed.length > 0) {
+            var cur = drawed.shift();
+            stroke((mycolor++) % 360, 100, 100);
+            point(cur.x, cur.y);
+        }
+
+    }
+
+    function staticf() {
+
+        noLoop();
+        active.push(p5.Vector(width/2, height/2));
+        while (active.length > 0) {
+            var ran = floor(random(active.length));
+            var pos = active[ran];
+
+            for (var i = 0; i < cnt; i++) {
+                var sample = p5.Vector.random2D();
+                var m = random(r, 2 * r);
+                sample.setMag(m);
+                sample.add(pos);
+
+                var col = floor(sample.x / w);
+                var row = floor(sample.y / w);
+
+                if (col < 0 || row < 0 || col >= cols || row >= rows) continue;
+                if (grid[col + row * cols]) continue;
+
+                var chk = true;
+                for (var j = -1; j <= 1; j++) {
+                    for (var k = -1; k <= 1; k++) {
+                        var idx = (col + j) + (row + k) * cols;
+                        var neighbor = grid[idx];
+                        if (!neighbor) continue;
+
+                        var d = p5.Vector.dist(sample, neighbor);
+                        if (d < r) chk = false;
+                    }
+                }
+
+                if (chk) {
+                    grid[col + row * cols] = sample;
+                    drawed.push(sample);
+                    active.push(sample);
+                }
+            }
+
+            active.splice(ran, 1);
+        }
+
+        while (drawed.length > 0) {
+            var cur = drawed.shift();
+            stroke((mycolor++) % 360, 100, 100);
+            point(cur.x, cur.y);
+        }
+    }
+</script>

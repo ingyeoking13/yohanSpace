@@ -1,0 +1,366 @@
+﻿@page
+@{
+    ViewData["Title"] = "Untitle";
+}
+
+<h1>untitle</h1>
+<div id="sketch-div" class="w-100"></div>
+<div class="container">
+    <div class="row">
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Untitle-1
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <button class="dropdown-item" type="button" onclick="loadedUntitle1()">Untitle-1</button>
+                <button class="dropdown-item" type="button" onclick="loadedUntitle2()">Untitle-2</button>
+                <button class="dropdown-item" type="button" onclick="loadedUntitle3()">Untitle-3</button>
+                <button class="dropdown-item" type="button" onclick="loadedUntitle4()">Untitle-4</button>
+                <button class="dropdown-item" type="button" onclick="loadedUntitle5()">Untitle-5</button>
+                <button class="dropdown-item" type="button" onclick="loadedUntitle6()">Untitle-6</button>
+                <button class="dropdown-item" type="button" onclick="loadedUntitle7()">Untitle-7</button>
+                <button class="dropdown-item" type="button" onclick="loadedUntitle8()">Untitle-8</button>
+                <button class="dropdown-item" type="button" onclick="loadedUntitle9()">Untitle-9</button>
+                <button class="dropdown-item" type="button" onclick="loadedUntitle10()">Untitle-10</button>
+            </div>
+        </div>
+
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                White
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenu3">
+                <button class="dropdown-item" type="button" onclick="blackBackground()">Black</button>
+                <button class="dropdown-item" type="button" onclick="whiteBackground()">White</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+var bckground = 255;
+var strk = 0;
+var aangle;
+
+function blackBackground() {
+    bckground = 0;
+    strk = 255;
+    setup();
+    document.getElementById("dropdownMenu3").innerText = "Black";
+}
+
+function whiteBackground() {
+    bckground = 255;
+    strk = 0;
+    setup();
+    document.getElementById("dropdownMenu3").innerText = "White";
+}
+
+function digonalLines() {
+
+    aangle = createVector(width/3, height).heading();
+
+    for (var i = 0; i < 50; i++) {
+        push();
+        translate(i * 8, 0);
+        rotate(aangle);
+        line(0, 0, width, 0);
+        pop();
+    }
+    for (var i = 0; i < 50; i++) {
+        push();
+        var sx = (1 / tan(aangle)) * height;
+        translate(sx + i * 8, height);
+        rotate(-aangle);
+        line(0, 0, width, 0);
+        pop();
+    }
+}
+
+function circling() {
+    push();
+    noFill();
+    var d = 5;
+    strokeWeight(0.5);
+    for (var i = 0; i < 200; i++) {
+        stroke(strk, i * 5);
+        ellipse(width / 2, height / 2, d+i * 7);
+    }
+    pop();
+}
+
+var setupDrawing = digonalLines;
+var drawDrawing = function () { };
+
+function loadedUntitle1() {
+    setupDrawing = digonalLines; 
+    setup();
+    document.getElementById("dropdownMenu2").innerText = "Untitle-1";
+}
+
+function loadedUntitle2() {
+    setupDrawing = circling; 
+    setup();
+    document.getElementById("dropdownMenu2").innerText = "Untitle-2";
+}
+
+var ddd;
+function loadedUntitle3() {
+    setupDrawing = function () { ddd = 5; }
+    drawDrawing = function circlingWhileLoop()
+    {
+        if (ddd <= 800) {
+            var x = width / 2;
+            var y = height / 2;
+
+            push();
+            strokeWeight(3);
+            stroke(255-bckground);
+            fill(bckground, 5);
+            ellipse(x, y, ddd);
+            pop();
+
+            var tmp = ddd;
+            while (tmp > 10) {
+                noStroke();
+                fill(bckground, 30);
+                ellipse(x, y, tmp);
+                tmp -= 10;
+            }
+            ddd += 10;
+        }
+    }
+
+    setup();
+    document.getElementById("dropdownMenu2").innerText = "Untitle-3";
+}
+    
+function loadedUntitle4() {
+    setupDrawing = function ()
+    {
+        for (var i = 0; i <50; i++)
+        {
+            push();
+            strokeWeight(max(4-i*0.2, 0.5));
+            stroke(strk, max(255-i*3, 0));
+            translate(0,i*5);
+            line(0, 0, width, 0);
+            pop();
+        }
+    }
+    drawDrawing = null;
+    setup();
+    document.getElementById("dropdownMenu2").innerText = "Untitle-4";
+}
+
+function loadedUntitle5() {
+    setupDrawing = function () {
+        var lastx = -999;
+        var lasty = -999;
+        var cx = width / 2;
+        var cy = height / 2;
+        
+        var radd=5;
+        for (var i = 0; i <50000; i++)
+        {
+            push();
+            var rad = radians(i); 
+            var xx = cx + cos(rad)*(radd);
+            var yy = cy + sin(rad)*(radd);
+            if( lastx>-999) line (lastx, lasty, xx, yy);
+            
+            radd+=0.02;
+            pop();
+            lastx = xx;
+            lasty = yy;
+        }
+    }
+    drawDrawing = null;
+    setup();
+    document.getElementById("dropdownMenu2").innerText = "Untitle-5";
+}
+
+function loadedUntitle6() {
+    setupDrawing = function () {
+        var lastx = -999;
+        var lasty = -999;
+        var cx = width / 2;
+        var cy = height / 2;
+
+        var radd = 5;
+        for (var j = 0; j < 3; j++) {
+            for (var i = 0; i < 20000; i++) {
+                push();
+                strokeWeight(0.3);
+                var rad = radians(i);
+                var noisedRadius = radd - noise(random(5)) * 200;
+                var xx = cx + cos(rad) * (noisedRadius);
+                var yy = cy + sin(rad) * (noisedRadius);
+                if (lastx > -999) line(lastx, lasty, xx, yy);
+
+                radd += 0.02;
+                pop();
+                lastx = xx;
+                lasty = yy;
+            }
+        }
+    }
+    drawDrawing = null;
+    setup();
+    document.getElementById("dropdownMenu2").innerText = "Untitle-6";
+}
+
+function loadedUntitle7() {
+    setupDrawing = function () {
+        var lastx = -999;
+        var lasty = -999;
+        var cx = width / 2;
+        var cy = height / 2;
+
+        var radd = 5;
+        for (var j = 0; j < 3; j++) {
+            for (var i = 0; i < 20000; i++) {
+                push();
+                strokeWeight(0.3);
+                var rad = radians(i);
+                var noisedRadius = radd - noise(rad) * 200;
+                var xx = cx + cos(rad) * (noisedRadius);
+                var yy = cy + sin(rad) * (noisedRadius);
+                if (lastx > -999) line(lastx, lasty, xx, yy);
+
+                radd += 0.02;
+                pop();
+                lastx = xx;
+                lasty = yy;
+            }
+        }
+    }
+    drawDrawing = null;
+    setup();
+    document.getElementById("dropdownMenu2").innerText = "Untitle-7";
+}
+
+function loadedUntitle8() {
+    setupDrawing = function () {
+        var cx = width / 2;
+        var cy = height / 2;
+
+        beginShape();
+        fill(20, 20, 100, 40);
+        var radd = 100;
+        for (var j = 0; j < 50; j++) {
+            for (var i = 0; i <= 360; i++) {
+                push();
+                strokeWeight(0.5);
+                var rad = radians(i);
+                var noisedRadius = (radd+j*10) + 40 * pow(noise(random(radd)), 1);
+                var xx = cx + cos(rad) * (noisedRadius);
+                var yy = cy + sin(rad) * (noisedRadius);
+                curveVertex(xx, yy);
+
+                pop();
+            }
+        }
+        endShape();
+    }
+    drawDrawing = null;
+    setup();
+    document.getElementById("dropdownMenu2").innerText = "Untitle-8";
+}
+
+function loadedUntitle9() {
+    var angle = 0;
+    var angleNoise = 0;
+    var radiusNoise = 0;
+    var xNoise = 0;
+    var yNoise = 0;
+    var radius = 100;
+    setupDrawing = null;
+    drawDrawing = function () {
+
+        angleNoise += 0.005;
+        xNoise += 0.01;
+        yNoise += 0.01;
+        radiusNoise += 0.05;
+
+        angle += noise(angleNoise)*3;
+        if (angle > 360) angle -= 360;
+        else if (angle < 0) angle += 360;
+
+        var cx = width / 2 + noise(xNoise) * 300-150;
+        var cy = height / 2 + noise(yNoise) * 300-150;
+
+        radius = noise(radiusNoise) * 500 + 1;
+
+        push();
+        smooth();
+        strokeWeight(1.8);
+        stroke(strk, 60);
+        var rad = radians(angle);
+        var xx = cx + cos(rad) * (radius);
+        var yy = cy + sin(rad) * (radius);
+
+        var opxx = cx + cos(rad+PI) * (radius);
+        var opyy = cy + sin(rad+PI) * (radius);
+        line(xx, yy, opxx, opyy);
+
+        pop();
+    }
+    setup();
+    document.getElementById("dropdownMenu2").innerText = "Untitle-9";
+}
+
+function loadedUntitle10() {
+    var angle = 0;
+    var radius = 100;
+    setupDrawing = null;
+    drawDrawing = function () {
+        background(bckground, 50);
+
+        angle += 0.8;
+
+        var cx = width / 2;
+        var cy = height / 2;
+
+        radius = 200;
+
+        push();
+        for (var i = 0; i < 10; i++) {
+            smooth();
+            strokeWeight(1.8);
+            stroke(strk, 200, 150, 188);
+            var rad = radians(angle+i*2);
+            var xx = cx + (cos(rad*2)) * (radius)*2 + sin(rad/2)*5;
+            var yy = cy + (sin(rad)) * (radius)+ cos(rad*5)*3;
+
+            var opxx = cx + cos(rad) * (2*radius) +sin(rad)*2;
+            var opyy = cy + sin(rad*5) * (2*radius) + sin(rad/3)*2;
+            line(xx, yy, opxx, opyy);
+        }
+
+        pop();
+    }
+    setup();
+    document.getElementById("dropdownMenu2").innerText = "Untitle-10";
+}
+
+
+function setup() {
+
+    var canvasDiv = document.getElementById("sketch-div");
+    var width = canvasDiv.offsetWidth;
+    var cvs = createCanvas(width, 400); 
+    cvs.parent("sketch-div");
+    background(bckground);
+    strokeWeight(1);
+    stroke(strk);
+    if ( setupDrawing ) setupDrawing();
+
+}
+
+function draw()
+{
+    if( drawDrawing ) drawDrawing();
+}
+</script>
